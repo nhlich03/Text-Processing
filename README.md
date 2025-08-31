@@ -1,57 +1,70 @@
-# Week 1 Text Processing Report
+# Vietnamese Text Processing Project
 
-This report summarizes the contents and workflow implemented in `week1.ipynb`.
+This project implements a **text preprocessing and vectorization pipeline** for Vietnamese online news articles.
 
 ## Overview
 
-The notebook focuses on **text preprocessing and vectorization** steps for Natural Language Processing (NLP) tasks.
+The workflow includes:
 
-It covers:
+- **Dataset download** from Kaggle (`haitranquangofficial/vietnamese-online-news-dataset`).  
+- **Text preprocessing**: cleaning, Vietnamese normalization, tokenization, stopword removal, optional lemmatization.  
+- **Vectorization**:  
+  - Bag-of-Words (BoW) with unigram and bigram features.  
+  - TF-IDF with unigram and bigram features.  
+- **Reporting**:  
+  - Corpus statistics (average tokens, min/max tokens).  
+  - Representation stats (vocab size, sparsity).  
+  - Top frequent terms (BoW) and top weighted terms (TF-IDF).  
+- Results can be printed to console or exported to CSV files in the `results/` folder.
 
-- Text cleaning (removing URLs, emails, mentions, special characters).
+## Project Structure
 
-- Text normalization (Vietnamese-specific using underthesea).
-
-- Tokenization, stopword removal, and lemmatization.
-
-- Vectorization using Bag-of-Words and TF-IDF, with unigram and bigram features.
-
-- Statistical reporting of dataset before and after preprocessing.
+```
+.
+├─ config.py           # Configurable parameters (dataset id, sample size, vectorizer settings)
+├─ main.py             # Entry point to run the pipeline
+├─ utils.py            # I/O helpers, stopword loader, output_results
+├─ preprocessing.py    # Text cleaning and tokenization functions
+├─ features.py         # Vectorizer builders and reporting utilities
+├─ stop_words.txt      # Vietnamese stopwords list
+├─ results/            # Output CSVs (if save_flag=True)
+└─ README.md
+```
 
 ## How to Run
 
 1. Install dependencies:
-
    ```bash
-   pip install underthesea scikit-learn nbconvert
+   pip install -r requirements.txt
    ```
 
-2. Open the notebook in Jupyter:
-
+2. Run the pipeline (default prints results):
    ```bash
-   jupyter notebook week1.ipynb
+   python main.py
    ```
 
-3. Or run the exported script:
-
-   ```bash
-   python week1.py
+3. To save results as CSV files in `results/`, set `save_flag=True` in `main.py`:
+   ```python
+   if __name__ == "__main__":
+       run_pipeline(save_flag=True)
    ```
 
 ## Outputs
 
-- Preprocessed dataset column `processed_text`.
+When `save_flag=True`, the following CSVs will be written into `results/`:
 
-- Sparse matrices: `X_bow_uni`, `X_bow_bi`, `X_tfidf_uni`, `X_tfidf_bi`.
+- `corpus_stats.csv` – corpus statistics.  
+- `representations.csv` – vocab size, sparsity of each representation.  
+- `top_terms/bow_unigram_topK.csv`  
+- `top_terms/bow_unibi_topK.csv`  
+- `top_terms/tfidf_unigram_topK.csv`  
+- `top_terms/tfidf_unibi_topK.csv`
 
-- Corpus statistics (average tokens, min/max tokens, sparsity).
-
-- Top terms identified by Bag-of-Words and TF-IDF.
+(*If `save_flag=False`, the same content will be printed to console instead.*)
 
 ## Notes
 
-- Only **1,000 sample rows** were used to save computational resources and speed up the experiment.  
-
-- Some rows may become empty after preprocessing (min_tokens = 0). These can be dropped or replaced with a special `<empty>` token.
-
-- Adjust `min_df` and `max_df` in vectorizers depending on dataset size and vocabulary distribution.
+- By default only **1,000 sample rows** are used (configurable in `config.py`).  
+- Adjust `min_df`, `max_df`, and `ngram_range` in `config.py` to tune vocabulary size.  
+- Stopwords can be updated in `stop_words.txt`.  
+- Empty rows after preprocessing may appear (min_tokens = 0). You can filter them depending on downstream tasks.  
