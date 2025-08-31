@@ -64,7 +64,7 @@ When `save_flag=True`, the following CSVs will be written into `results/`:
 
 ## Notes
 
-- By default only **1,000 sample rows** are used (configurable in `config.py`).  
+- By default only **5,000 sample rows** are used (configurable in `config.py`).  
 - Adjust `min_df`, `max_df`, and `ngram_range` in `config.py` to tune vocabulary size.  
 - Stopwords can be updated in `stop_words.txt`.  
 - Empty rows after preprocessing may appear (min_tokens = 0). You can filter them depending on downstream tasks.  

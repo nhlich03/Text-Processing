@@ -3,7 +3,7 @@ DATASET_ID = "haitranquangofficial/vietnamese-online-news-dataset"
 DATASET_FILE = "news_dataset.json"   # File name
 
 # Sampling data
-SAMPLE_SIZE = 1000
+SAMPLE_SIZE = 5000
 RANDOM_STATE = 42
 
 # Vectorizer

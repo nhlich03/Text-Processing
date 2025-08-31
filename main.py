@@ -6,7 +6,7 @@ from config import (
     TOP_K, STOPWORDS_TXT
 )
 from utils import (
-    download_dataset, load_json_as_df, load_stopwords_txt,
+    download_dataset_kaggle, load_json_as_df, load_stopwords_txt,
     output_results
 )
 from preprocessing import process_text
@@ -15,9 +15,9 @@ from features import (
     top_terms_count, top_terms_tfidf
 )
 
-def run_pipeline(save_flag: bool = False):
+def run_pipeline(save_flag: bool = False, print_flag: bool = True):
     # Load dataset
-    ds_dir = download_dataset()
+    ds_dir = download_dataset_kaggle()
     df = load_json_as_df(ds_dir, DATASET_FILE)
 
     # Clean
@@ -45,8 +45,10 @@ def run_pipeline(save_flag: bool = False):
     X_tfidf_bi  = tf_bi.fit_transform(processed)
 
     # Results
+    output_results(processed.to_frame(), "Processed Text", "processed_text.csv", save_flag, print_flag)
+
     cs_df = corpus_stats(processed).round(2)
-    output_results(cs_df, "Corpus stats", "corpus_stats.csv", save_flag)
+    output_results(cs_df, "Corpus stats", "corpus_stats.csv", save_flag, print_flag)
 
     rep_df = pd.concat([
         matrix_report(X_bow_uni,  "BoW unigram"),
@@ -54,17 +56,17 @@ def run_pipeline(save_flag: bool = False):
         matrix_report(X_tfidf_uni,"TF-IDF unigram"),
         matrix_report(X_tfidf_bi, "TF-IDF uni+bi"),
     ], axis=1).T
-    output_results(rep_df, "Representations", "representations.csv", save_flag)
+    output_results(rep_df, "Representations", "representations.csv", save_flag, print_flag)
 
     top_bow_uni = top_terms_count(cv_uni, X_bow_uni, TOP_K)
     top_bow_bi  = top_terms_count(cv_bi,  X_bow_bi,  TOP_K)
     top_tf_uni  = top_terms_tfidf(tf_uni, X_tfidf_uni, TOP_K)
     top_tf_bi   = top_terms_tfidf(tf_bi,  X_tfidf_bi,  TOP_K)
 
-    output_results(top_bow_uni, "BoW unigram",  f"top_terms/bow_unigram_top{TOP_K}.csv", save_flag)
-    output_results(top_bow_bi,  "BoW uni+bi",   f"top_terms/bow_unibi_top{TOP_K}.csv",  save_flag)
-    output_results(top_tf_uni,  "TF-IDF unigram", f"top_terms/tfidf_unigram_top{TOP_K}.csv", save_flag)
-    output_results(top_tf_bi,   "TF-IDF uni+bi", f"top_terms/tfidf_unibi_top{TOP_K}.csv",   save_flag)
+    output_results(top_bow_uni, "BoW unigram",  f"top_terms/bow_unigram_top{TOP_K}.csv", save_flag, print_flag)
+    output_results(top_bow_bi,  "BoW uni+bi",   f"top_terms/bow_unibi_top{TOP_K}.csv",  save_flag, print_flag)
+    output_results(top_tf_uni,  "TF-IDF unigram", f"top_terms/tfidf_unigram_top{TOP_K}.csv", save_flag, print_flag)
+    output_results(top_tf_bi,   "TF-IDF uni+bi", f"top_terms/tfidf_unibi_top{TOP_K}.csv",   save_flag, print_flag)
 
 if __name__ == "__main__":
-    run_pipeline(save_flag=True)  
+    run_pipeline(save_flag=True, print_flag=False)

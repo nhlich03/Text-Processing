@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Set
 from config import DATASET_ID, DATASET_FILE, STOPWORDS_TXT
 
-def download_dataset() -> Path:
+def download_dataset_kaggle() -> Path:
     path = Path(kagglehub.dataset_download(DATASET_ID))
     return path
 
@@ -28,17 +28,21 @@ def load_stopwords_txt(path: str = STOPWORDS_TXT) -> Set[str]:
                 words.add(w)
     return words
 
+def load_data_from_txt(path: str) -> pd.DataFrame:
+    df = pd.read_csv(path, sep="\t", header=None, names=["content"])
+    return df
+
 def save_dataframe_to_csv(df: pd.DataFrame, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(path, index=False)
 
-def output_results(df: pd.DataFrame, title: str, relpath: str, save_flag: bool):
+def output_results(df: pd.DataFrame, title: str, relpath: str, save_flag: bool, print_flag: bool):
     """
-    Save results to CSV or print to console.
+    Save results to CSV and/or print to console.
     """
     if save_flag:
         out_path = Path("results") / relpath
         save_dataframe_to_csv(df, out_path)
-    else:
+    if print_flag:
         print(f"\n=== {title} ===")
         print(df.to_string(index=False))
