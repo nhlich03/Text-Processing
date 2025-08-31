@@ -38,7 +38,7 @@ The workflow includes:
    pip install -r requirements.txt
    ```
 
-2. Run the pipeline (default prints results):
+2. Run the pipeline:
    ```bash
    python main.py
    ```
@@ -59,8 +59,6 @@ When `save_flag=True`, the following CSVs will be written into `results/`:
 - `top_terms/bow_unibi_topK.csv`  
 - `top_terms/tfidf_unigram_topK.csv`  
 - `top_terms/tfidf_unibi_topK.csv`
-
-(*If `save_flag=False`, the same content will be printed to console instead.*)
 
 ## Notes
 
